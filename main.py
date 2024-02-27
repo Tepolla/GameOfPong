@@ -1,16 +1,60 @@
-# This is a sample Python script.
+import pygame
+import sys
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+################################ Global variables ################################
+
+# Border items
+borderTop = 0
+borderLeft = 0
+borderBottom = 700 # Height of the screen
+borderRight = 1000 # Width of the screen
+
+# Paddle items
+PADDLE_WIDTH, PADDLE_HEIGHT = 15, 90
+PADDLE_MOVEMENT_DISTANCE = 20
+
+# Player1 items
+P1Score = 0
+P1PaddleX = borderLeft + 10 # borderLeft isn't needed, it just helps make the code look neater
+P1PaddleY = borderBottom / 2
+
+# Player2 items
+P2Score = 0
+P2PaddleX = borderRight - 10
+P2PaddleY = borderBottom / 2
+
+# Ball items
+ballX = 0
+ballY = 0
+ballDir = 0
+ballSpeed = 0
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+################################ Global variables ################################
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+################################ Paddle mechanics ################################
+
+
+
+################################ Paddle mechanics ################################
+
+
+
+# Initialize Pygame
+pygame.init()
+
+# Setting the width and height of the screen
+screen = pygame.display.set_mode((borderRight, borderBottom))
+pygame.display.set_caption("Pong Game")
+
+# Main game loop
+while True:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+
+    # Update screen
+    pygame.display.flip()
