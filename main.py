@@ -11,7 +11,7 @@ borderRight = 1000 # Width of the screen
 
 # Paddle items
 PADDLE_WIDTH, PADDLE_HEIGHT = 15, 90
-PADDLE_MOVEMENT_DISTANCE = 20
+PADDLE_MOVEMENT_DISTANCE = 10
 
 # Player1 items
 P1Score = 0
@@ -93,6 +93,17 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+
+    # Call the P1 paddle movement function
+    P1PaddleMove()
+
+    # Draw everything here
+    # For example, you might want to clear the screen and draw the paddles
+    # and the ball in their new positions
+    screen.fill((0, 0, 0))  # Clear screen with black color
+
+    # Draw Player 1 paddle
+    pygame.draw.rect(screen, (255, 255, 255), (P1PaddleX, P1PaddleY, PADDLE_WIDTH, PADDLE_HEIGHT))
 
     # Update screen
     pygame.display.flip()
