@@ -41,7 +41,7 @@ def Paddle(state, y):
     # THEREFORE INCREASING Y POSITION MOVES ENTITY DOWN AND DECREASING, UP
 
     # Prevents paddle from going below the screen
-    if y >= borderBottom and state == -1:
+    if (y + PADDLE_HEIGHT) >= borderBottom and state == -1:
         return 0
     # Prevents paddle from going above the screen
     elif y <= borderTop and state == 1:
