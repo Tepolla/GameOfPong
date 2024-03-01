@@ -11,7 +11,7 @@ borderRight = 1000 # Width of the screen
 
 # Paddle items
 PADDLE_WIDTH, PADDLE_HEIGHT = 15, 90
-PADDLE_MOVEMENT_DISTANCE = 10
+PADDLE_MOVE_DISTANCE = 10
 
 # Player1 items
 P1Score = 0
@@ -29,6 +29,8 @@ ballY = 0
 ballDir = 0
 ballSpeed = 0
 
+# Frame rate control
+FPS = 60
 
 ################################ Global variables ################################
 
@@ -50,10 +52,10 @@ def Paddle(state, y):
     else:
         # Moves paddle up
         if state == 1:
-            return -PADDLE_MOVEMENT_DISTANCE
+            return -PADDLE_MOVE_DISTANCE
         # Moves paddle down
         elif state == -1:
-            return PADDLE_MOVEMENT_DISTANCE
+            return PADDLE_MOVE_DISTANCE
         # Doesn't move paddle if state is 0 (no directional input)
         else:
             return 0
@@ -87,6 +89,9 @@ pygame.init()
 screen = pygame.display.set_mode((borderRight, borderBottom))
 pygame.display.set_caption("Pong Game")
 
+# Clock object to control the frame rate
+clock = pygame.time.Clock()
+
 # Main game loop
 while True:
     for event in pygame.event.get():
@@ -98,8 +103,6 @@ while True:
     P1PaddleMove()
 
     # Draw everything here
-    # For example, you might want to clear the screen and draw the paddles
-    # and the ball in their new positions
     screen.fill((0, 0, 0))  # Clear screen with black color
 
     # Draw Player 1 paddle
@@ -107,3 +110,6 @@ while True:
 
     # Update screen
     pygame.display.flip()
+
+    # FPS control to make movements smoother
+    clock.tick(FPS)
