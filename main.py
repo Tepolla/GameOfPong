@@ -11,7 +11,7 @@ borderRight = 1000 # Width of the screen
 
 # Paddle items
 PADDLE_WIDTH, PADDLE_HEIGHT = 15, 90
-PADDLE_MOVE_DISTANCE = 10
+PADDLE_MOVEMENT_DISTANCE = 10
 
 # Player1 items
 P1Score = 0
@@ -52,10 +52,10 @@ def Paddle(state, y):
     else:
         # Moves paddle up
         if state == 1:
-            return -PADDLE_MOVE_DISTANCE
+            return -PADDLE_MOVEMENT_DISTANCE
         # Moves paddle down
         elif state == -1:
-            return PADDLE_MOVE_DISTANCE
+            return PADDLE_MOVEMENT_DISTANCE
         # Doesn't move paddle if state is 0 (no directional input)
         else:
             return 0
@@ -67,18 +67,29 @@ def Paddle(state, y):
 
 ################################ P1 paddle mechanics ################################
 
-def P1PaddleMove():
+def P1PaddleMove(state):
     global P1PaddleY
-
-    keys = pygame.key.get_pressed()
-
-    if keys[pygame.K_w]:
-        P1PaddleY += Paddle(1, P1PaddleY)
-    if keys[pygame.K_s]:
-        P1PaddleY += Paddle(-1, P1PaddleY)
-
+    P1PaddleY += Paddle(state, P1PaddleY)
 
 ################################ P1 paddle mechanics ################################
+
+
+
+################################ User controlled mechanics ################################
+
+def getUserInput():
+    keys = pygame.key.get_pressed()
+
+    # Player 1 controls
+    if keys[pygame.K_w]:
+        P1PaddleMove(1)  # Move up
+    if keys[pygame.K_s]:
+        P1PaddleMove(-1)  # Move down
+
+# Future: Add Player 2 controls here
+
+
+################################ User controlled mechanics ################################
 
 
 
@@ -99,8 +110,8 @@ while True:
             pygame.quit()
             sys.exit()
 
-    # Call the P1 paddle movement function
-    P1PaddleMove()
+    # Get user input
+    getUserInput()
 
     # Draw everything here
     screen.fill((0, 0, 0))  # Clear screen with black color
