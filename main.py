@@ -25,7 +25,7 @@ P2PaddleY = borderBottom / 2 - PADDLE_HEIGHT / 2
 # Ball items
 ballX = borderRight // 2
 ballY = borderBottom // 2
-ballSpeed = 5
+ballSpeed = 3
 ballRadius = 10
 ballSpeedX = 0  # Initialize with a default value
 ballSpeedY = 0  # Initialize with a default value
@@ -73,12 +73,15 @@ def P2PaddleMove(state):
 ################################ User controlled mechanics ################################
 #region
 
-def getUserInput():
+def getUser1Input():
     keys = pygame.key.get_pressed()
     if keys[pygame.K_w]:
         P1PaddleMove(-1)
     if keys[pygame.K_s]:
         P1PaddleMove(1)
+
+def getUser2Input():
+    keys = pygame.key.get_pressed()
     if keys[pygame.K_UP]:
         P2PaddleMove(-1)
     if keys[pygame.K_DOWN]:
@@ -147,7 +150,32 @@ def ballMove():
 
 
 
-################################ Ball mechanics ################################
+################################ NPC mechanics ################################
+#region
+
+def Npc1():
+    global P1PaddleY
+    # Center of the paddle
+    paddleCenter = (P1PaddleY + 1) + (PADDLE_HEIGHT - 1) / 2
+    # Move paddle up if the ball is above the center of the paddle
+    if ballY < paddleCenter - PADDLE_MOVEMENT_DISTANCE:
+        P1PaddleMove(-1)
+    # Move paddle down if the ball is below the center of the paddle
+    elif ballY > paddleCenter + PADDLE_MOVEMENT_DISTANCE:
+        P1PaddleMove(1)
+
+def Npc2():
+    global P2PaddleY
+    # Center of the paddle
+    paddleCenter = (P2PaddleY + 1) + (PADDLE_HEIGHT - 1) / 2
+    # Move paddle up if the ball is above the center of the paddle
+    if ballY < paddleCenter - PADDLE_MOVEMENT_DISTANCE:
+        P2PaddleMove(-1)
+    # Move paddle down if the ball is below the center of the paddle
+    elif ballY > paddleCenter + PADDLE_MOVEMENT_DISTANCE:
+        P2PaddleMove(1)
+
+################################ NPC mechanics ################################
 #endregion
 
 
@@ -187,7 +215,12 @@ def game():
             pygame.quit()
             sys.exit()
 
-    getUserInput()
+    getUser1Input() # Enables user one to play with 'w' & 's' keys
+    # getUser2Input() # Enables user two to play with arrow keys
+
+    Npc1()
+    Npc2()
+
     ballMove()
 
 ################################ Game Method ################################
