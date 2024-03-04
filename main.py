@@ -2,12 +2,13 @@ import pygame
 import sys
 
 ################################ Global variables ################################
+#region
 
 # Border items
 borderTop = 0
 borderLeft = 0
-borderBottom = 700 # Height of the screen
-borderRight = 1000 # Width of the screen
+borderBottom = 700  # Height of the screen
+borderRight = 1000  # Width of the screen
 
 # Paddle items
 PADDLE_WIDTH, PADDLE_HEIGHT = 15, 90
@@ -15,7 +16,7 @@ PADDLE_MOVEMENT_DISTANCE = 10
 
 # Player1 items
 P1Score = 0
-P1PaddleX = borderLeft + 10 # borderLeft isn't needed, it just helps make the code look neater
+P1PaddleX = borderLeft + 10  # borderLeft isn't needed, it just helps make the code look neater
 P1PaddleY = borderBottom / 2
 
 # Player2 items
@@ -32,11 +33,13 @@ ballSpeed = 0
 # Frame rate control
 FPS = 60
 
+#endregion
 ################################ Global variables ################################
 
 
 
 ################################ Paddle mechanics ################################
+#region
 
 def Paddle(state, y):
     # REMEMBER, (0, 0) IS LOCATED AT THE TOP LEFT OF THE CREATED WINDOW
@@ -60,11 +63,13 @@ def Paddle(state, y):
         else:
             return 0
 
+#endregion
 ################################ Paddle mechanics ################################
 
 
 
 ################################ P1 & P2 paddle mechanics ################################
+#region
 
 #------------------ P1 paddle ------------------#
 
@@ -78,16 +83,17 @@ def P2PaddleMove(state):
     global P2PaddleY
     P2PaddleY += Paddle(state, P2PaddleY)
 
+#endregion
 ################################ P1 & P2 paddle mechanics ################################
 
 
 
 ################################ User controlled mechanics ################################
-
-def getUserInput():
-    keys = pygame.key.get_pressed()
+#region
 
 #------------------ P1 controls ------------------#
+def getUser1Input():
+    keys = pygame.key.get_pressed()
 
     # Player 1 controls
     if keys[pygame.K_w]:
@@ -96,6 +102,8 @@ def getUserInput():
         P1PaddleMove(-1)  # Move down
 
 #------------------ P2 controls ------------------#
+def getUser2Input():
+    keys = pygame.key.get_pressed()
 
     # Player 2 controls
     if keys[pygame.K_UP]:
@@ -103,11 +111,14 @@ def getUserInput():
     if keys[pygame.K_DOWN]:
         P2PaddleMove(-1)  # Move down
 
+#endregion
 ################################ User controlled mechanics ################################
 
 
 
 # Initialize Pygame
+#region
+
 pygame.init()
 
 # Setting the width and height of the screen
@@ -117,7 +128,11 @@ pygame.display.set_caption("Pong Game")
 # Clock object to control the frame rate
 clock = pygame.time.Clock()
 
+#endregion
+
 # Main game loop
+#region
+
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -125,7 +140,7 @@ while True:
             sys.exit()
 
     # Get user input
-    getUserInput()
+    getUser1Input()
 
     # Draw everything here
     screen.fill((0, 0, 0))  # Clear screen with black color
@@ -141,3 +156,5 @@ while True:
 
     # FPS control to make movements smoother
     clock.tick(FPS)
+
+#endregion
