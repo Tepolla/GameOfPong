@@ -89,21 +89,78 @@ def getUserInput():
 
 
 
+################################ Ball mechanics ################################
+#region
+
+def reset_ball():
+    global ballX, ballY, ballSpeedX, ballSpeedY, ballSpeed
+
+    ballSpeed = 5
+    ballX = borderRight // 2
+    ballY = borderBottom // 2
+    angle = random.choice([random.randint(-45, 45), random.randint(135, 225)])
+    angle_radians = math.radians(angle)
+    ballSpeedX = ballSpeed * math.cos(angle_radians)
+    ballSpeedY = ballSpeed * math.sin(angle_radians)
+
+# Initialize ball direction
+reset_ball()
+
+def ballMove():
+    global ballX, ballY, ballSpeedX, ballSpeedY, P1Score, P2Score, ballRadius, ballSpeed
+
+    # Move the ball by its current speed
+    ballX += ballSpeedX
+    ballY += ballSpeedY
+
+    # Collision with top and bottom
+    if ballY - ballRadius <= 0 or ballY + ballRadius >= borderBottom:
+        ballSpeedY = -ballSpeedY
+
+    # Collision with left paddle
+    if ballX - ballRadius <= PADDLE_WIDTH and P1PaddleY < ballY < P1PaddleY + PADDLE_HEIGHT:
+        ballSpeedX = -ballSpeedX
+        ballSpeed += 50
+
+    # Collision with right paddle
+    elif ballX + ballRadius >= borderRight - PADDLE_WIDTH and P2PaddleY < ballY < P2PaddleY + PADDLE_HEIGHT:
+        ballSpeedX = -ballSpeedX
+        ballSpeed += 50
+
+    # Scoring
+    if ballX < 0:  # Player 2 scores
+        P2Score += 1
+        reset_ball()  # Reset the ball to the center
+
+    if ballX > borderRight:  # Player 1 scores
+        P1Score += 1
+        reset_ball()  # Reset the ball to the center
+
+
+################################ Ball mechanics ################################
+#endregion
+
+
+
 ################################ Draw Method ################################
 #region
 
 def draw():
+    # print(f"Drawing ball at ({ballX}, {ballY})")  # Debugging print statement
+
     screen.fill((0, 0, 0))  # Clear screen with black color
     pygame.draw.rect(screen, (255, 255, 255), (0, P1PaddleY, PADDLE_WIDTH, PADDLE_HEIGHT))  # Player 1 paddle
     pygame.draw.rect(screen, (255, 255, 255), (borderRight - PADDLE_WIDTH, P2PaddleY, PADDLE_WIDTH, PADDLE_HEIGHT))  # Player 2 paddle
+    pygame.draw.circle(screen, (255, 255, 255), (ballX, ballY), ballRadius)  # Ball
 
     # Scoreboard
-    font = pygame.font.SysFont("Arial", 30)  # You can change "Arial" to any available font and 30 to your desired size
+    font = pygame.font.SysFont("Arial", 30)
     score_text = font.render(f"Score: {P1Score} | {P2Score}", True, (255, 255, 255))
-    text_rect = score_text.get_rect(center=(borderRight / 2, 30))  # Adjust the Y value to move it up or down
+    text_rect = score_text.get_rect(center=(borderRight / 2, 30))
     screen.blit(score_text, text_rect)
 
     pygame.display.flip()
+
 
 ################################ Draw Method ################################
 #endregion
@@ -114,17 +171,17 @@ def draw():
 #region
 
 def game():
+    global ballX, ballY
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
 
     getUserInput()
-    draw()
+    ballMove()
 
 ################################ Game Method ################################
 #endregion
-
 
 
 # Initialize Pygame
@@ -133,7 +190,10 @@ screen = pygame.display.set_mode((borderRight, borderBottom))
 pygame.display.set_caption("Pong Game")
 clock = pygame.time.Clock()
 
+
 # Main game loop
 while True:
-    game()
-    clock.tick(FPS)
+    game()  # Update game logic
+    draw()  # Draw the current game state
+    clock.tick(FPS)  # Maintain the game's framerate
+
