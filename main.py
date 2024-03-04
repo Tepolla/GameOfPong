@@ -25,10 +25,12 @@ P2PaddleY = borderBottom / 2 - PADDLE_HEIGHT / 2
 # Ball items
 ballX = borderRight // 2
 ballY = borderBottom // 2
-ballSpeed = 3
+ballSpeed = 0
+startingSpeed = 5  # change for greater starting speed
+speedChange = 1  # change for greater change in speed
 ballRadius = 10
-ballSpeedX = 0  # Initialize with a default value
-ballSpeedY = 0  # Initialize with a default value
+ballSpeedX = 0
+ballSpeedY = 0
 
 # Frame rate control
 FPS = 60
@@ -95,55 +97,70 @@ def getUser2Input():
 ################################ Ball mechanics ################################
 #region
 
+# Resets ball
 def reset_ball():
     global ballX, ballY, ballSpeedX, ballSpeedY, ballSpeed
 
-    ballSpeed = 5
+    # Resets ball speed to starting speed
+    ballSpeed = startingSpeed
+
+    # Calculates ball's X, Y position
     ballX = borderRight // 2
     ballY = borderBottom // 2
+
+    # Generates random ball direction & calculates X, Y speed
     angle = random.choice([random.randint(-45, 45), random.randint(135, 225)])
     angle_radians = math.radians(angle)
     ballSpeedX = ballSpeed * math.cos(angle_radians)
     ballSpeedY = ballSpeed * math.sin(angle_radians)
 
-
+# Determines how ball motion will behave
 def ballMove():
-    global ballX, ballY, ballSpeedX, ballSpeedY, P1Score, P2Score, ballRadius, ballSpeed
+    global ballX, ballY, ballSpeedX, ballSpeedY, P1Score, P2Score, ballRadius, ballSpeed, P1PaddleY, P2PaddleY, borderBottom, borderRight
 
-    # Move the ball by its current speed
-    ballX += ballSpeedX
-    ballY += ballSpeedY
+    # Calculate proposed new position
+    newBallX = ballX + ballSpeedX
+    newBallY = ballY + ballSpeedY
 
-    # Collision with top and bottom
-    if ballY - ballRadius <= 0 or ballY + ballRadius >= borderBottom:
-        ballSpeedY = -ballSpeedY
+    # Ensure the ball does not go out of bounds vertically
+    if newBallY - ballRadius <= 0 or newBallY + ballRadius >= borderBottom:
+        ballSpeedY = -ballSpeedY  # Reverse vertical speed
+        newBallY = ballY  # Revert Y to previous position to avoid sticking to the boundary
 
-    # Collision with left paddle
-    if ballX - ballRadius <= PADDLE_WIDTH and P1PaddleY < ballY < P1PaddleY + PADDLE_HEIGHT:
+    # Collision detection and speed adjustment for left paddle
+    if newBallX - ballRadius < PADDLE_WIDTH and P1PaddleY < ballY < P1PaddleY + PADDLE_HEIGHT:
+        # Calculate the new angle based on where the ball hits the paddle
         ballSpeedX = -ballSpeedX
-        ballSpeed += 1  # Increase the ball speed
-        # Recalculate speed components to reflect the new speed
+        newBallX = PADDLE_WIDTH + ballRadius  # Ensure the ball bounces off correctly
+
+        # Increase the ball speed and recalculate speed components
+        ballSpeed += speedChange
         angle_radians = math.atan2(ballSpeedY, ballSpeedX)
-        ballSpeedX = ballSpeed * math.cos(angle_radians)
+        ballSpeedX = abs(ballSpeed * math.cos(angle_radians))  # Ensure ballSpeedX is positive
         ballSpeedY = ballSpeed * math.sin(angle_radians)
 
-    # Collision with right paddle
-    elif ballX + ballRadius >= borderRight - PADDLE_WIDTH and P2PaddleY < ballY < P2PaddleY + PADDLE_HEIGHT:
+    # Collision detection and speed adjustment for right paddle
+    elif newBallX + ballRadius > borderRight - PADDLE_WIDTH and P2PaddleY < ballY < P2PaddleY + PADDLE_HEIGHT:
         ballSpeedX = -ballSpeedX
-        ballSpeed += 1  # Increase the ball speed
-        # Recalculate speed components to reflect the new speed
+        newBallX = borderRight - PADDLE_WIDTH - ballRadius  # Ensure the ball bounces off correctly
+
+        # Increase the ball speed and recalculate speed components
+        ballSpeed += speedChange
         angle_radians = math.atan2(ballSpeedY, ballSpeedX)
-        ballSpeedX = ballSpeed * math.cos(angle_radians)
+        ballSpeedX = -abs(ballSpeed * math.cos(angle_radians))  # Ensure ballSpeedX is negative for leftward movement
         ballSpeedY = ballSpeed * math.sin(angle_radians)
 
-    # Scoring
-    if ballX < 0:  # Player 2 scores
+    # Update the ball's position
+    ballX, ballY = newBallX, newBallY
+
+    # Scoring mechanism
+    if ballX < 0:  # Ball is out of bounds on the left
         P2Score += 1
         reset_ball()  # Reset the ball to the center
-
-    if ballX > borderRight:  # Player 1 scores
+    elif ballX > borderRight:  # Ball is out of bounds on the right
         P1Score += 1
         reset_ball()  # Reset the ball to the center
+
 
 ################################ Ball mechanics ################################
 #endregion
@@ -218,8 +235,8 @@ def game():
     getUser1Input() # Enables user one to play with 'w' & 's' keys
     # getUser2Input() # Enables user two to play with arrow keys
 
-    Npc1()
-    Npc2()
+    Npc1()  # Enables Npc one to play (left paddle)
+    Npc2()  # Enables Npc two to play (right paddle)
 
     ballMove()
 
@@ -243,4 +260,3 @@ while True:
     game()  # Update game logic
     draw()  # Draw the current game state
     clock.tick(FPS)  # Maintain the game's framerate
-
