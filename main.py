@@ -20,7 +20,7 @@ P1PaddleY = borderBottom / 2
 
 # Player2 items
 P2Score = 0
-P2PaddleX = borderRight - 10
+P2PaddleX = borderRight - PADDLE_WIDTH - 10
 P2PaddleY = borderBottom / 2
 
 # Ball items
@@ -60,18 +60,25 @@ def Paddle(state, y):
         else:
             return 0
 
-
 ################################ Paddle mechanics ################################
 
 
 
-################################ P1 paddle mechanics ################################
+################################ P1 & P2 paddle mechanics ################################
+
+#------------------ P1 paddle ------------------#
 
 def P1PaddleMove(state):
     global P1PaddleY
     P1PaddleY += Paddle(state, P1PaddleY)
 
-################################ P1 paddle mechanics ################################
+#------------------ P2 paddle ------------------#
+
+def P2PaddleMove(state):
+    global P2PaddleY
+    P2PaddleY += Paddle(state, P2PaddleY)
+
+################################ P1 & P2 paddle mechanics ################################
 
 
 
@@ -80,14 +87,21 @@ def P1PaddleMove(state):
 def getUserInput():
     keys = pygame.key.get_pressed()
 
+#------------------ P1 controls ------------------#
+
     # Player 1 controls
     if keys[pygame.K_w]:
         P1PaddleMove(1)  # Move up
     if keys[pygame.K_s]:
         P1PaddleMove(-1)  # Move down
 
-# Future: Add Player 2 controls here
+#------------------ P2 controls ------------------#
 
+    # Player 2 controls
+    if keys[pygame.K_UP]:
+        P2PaddleMove(1)  # Move up
+    if keys[pygame.K_DOWN]:
+        P2PaddleMove(-1)  # Move down
 
 ################################ User controlled mechanics ################################
 
@@ -118,6 +132,9 @@ while True:
 
     # Draw Player 1 paddle
     pygame.draw.rect(screen, (255, 255, 255), (P1PaddleX, P1PaddleY, PADDLE_WIDTH, PADDLE_HEIGHT))
+
+    # Draw Player 2 paddle
+    pygame.draw.rect(screen, (255, 255, 255), (P2PaddleX, P2PaddleY, PADDLE_WIDTH, PADDLE_HEIGHT))
 
     # Update screen
     pygame.display.flip()
