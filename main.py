@@ -103,8 +103,6 @@ def reset_ball():
     ballSpeedX = ballSpeed * math.cos(angle_radians)
     ballSpeedY = ballSpeed * math.sin(angle_radians)
 
-# Initialize ball direction
-reset_ball()
 
 def ballMove():
     global ballX, ballY, ballSpeedX, ballSpeedY, P1Score, P2Score, ballRadius, ballSpeed
@@ -120,12 +118,20 @@ def ballMove():
     # Collision with left paddle
     if ballX - ballRadius <= PADDLE_WIDTH and P1PaddleY < ballY < P1PaddleY + PADDLE_HEIGHT:
         ballSpeedX = -ballSpeedX
-        ballSpeed += 50
+        ballSpeed += 1  # Increase the ball speed
+        # Recalculate speed components to reflect the new speed
+        angle_radians = math.atan2(ballSpeedY, ballSpeedX)
+        ballSpeedX = ballSpeed * math.cos(angle_radians)
+        ballSpeedY = ballSpeed * math.sin(angle_radians)
 
     # Collision with right paddle
     elif ballX + ballRadius >= borderRight - PADDLE_WIDTH and P2PaddleY < ballY < P2PaddleY + PADDLE_HEIGHT:
         ballSpeedX = -ballSpeedX
-        ballSpeed += 50
+        ballSpeed += 1  # Increase the ball speed
+        # Recalculate speed components to reflect the new speed
+        angle_radians = math.atan2(ballSpeedY, ballSpeedX)
+        ballSpeedX = ballSpeed * math.cos(angle_radians)
+        ballSpeedY = ballSpeed * math.sin(angle_radians)
 
     # Scoring
     if ballX < 0:  # Player 2 scores
@@ -135,6 +141,10 @@ def ballMove():
     if ballX > borderRight:  # Player 1 scores
         P1Score += 1
         reset_ball()  # Reset the ball to the center
+
+################################ Ball mechanics ################################
+#endregion
+
 
 
 ################################ Ball mechanics ################################
@@ -183,6 +193,10 @@ def game():
 ################################ Game Method ################################
 #endregion
 
+
+
+# Initialize ball direction
+reset_ball()
 
 # Initialize Pygame
 pygame.init()
