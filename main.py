@@ -1,5 +1,7 @@
 import pygame
 import sys
+import random
+import math
 
 ################################ Global variables ################################
 #region
@@ -93,8 +95,14 @@ def getUserInput():
 def draw():
     screen.fill((0, 0, 0))  # Clear screen with black color
     pygame.draw.rect(screen, (255, 255, 255), (0, P1PaddleY, PADDLE_WIDTH, PADDLE_HEIGHT))  # Player 1 paddle
-    pygame.draw.rect(screen, (255, 255, 255),
-                     (borderRight - PADDLE_WIDTH, P2PaddleY, PADDLE_WIDTH, PADDLE_HEIGHT))  # Player 2 paddle
+    pygame.draw.rect(screen, (255, 255, 255), (borderRight - PADDLE_WIDTH, P2PaddleY, PADDLE_WIDTH, PADDLE_HEIGHT))  # Player 2 paddle
+
+    # Scoreboard
+    font = pygame.font.SysFont("Arial", 30)  # You can change "Arial" to any available font and 30 to your desired size
+    score_text = font.render(f"Score: {P1Score} | {P2Score}", True, (255, 255, 255))
+    text_rect = score_text.get_rect(center=(borderRight / 2, 30))  # Adjust the Y value to move it up or down
+    screen.blit(score_text, text_rect)
+
     pygame.display.flip()
 
 ################################ Draw Method ################################
